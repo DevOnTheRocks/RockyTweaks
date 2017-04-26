@@ -1,19 +1,19 @@
 package rocks.devonthe.rockycore;
 
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rocks.devonthe.rockycore.crafttweaker.CraftTweakerModule;
 import rocks.devonthe.rockycore.proxy.CommonProxy;
 
 @Mod(
 	name = ModInfo.NAME,
 	modid = ModInfo.MODID,
-	version = ModInfo.VERSION
+	version = ModInfo.VERSION,
+	acceptedMinecraftVersions = "[1.11.2,)",
+	dependencies = "require:forge,after:crafttweaker@[3.0.24,);after:jei@[4.3.3.268,);"
 )
 public class RockyCore {
 
@@ -28,6 +28,6 @@ public class RockyCore {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		logger.info("Starting Initialization for " + ModInfo.NAME);
-		if (Loader.isModLoaded("crafttweaker")) new CraftTweakerModule();
+		proxy.init(event);
 	}
 }

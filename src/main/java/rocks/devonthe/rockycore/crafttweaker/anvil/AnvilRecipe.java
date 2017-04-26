@@ -1,9 +1,13 @@
 package rocks.devonthe.rockycore.crafttweaker.anvil;
 
-import mezz.jei.plugins.vanilla.anvil.AnvilRecipeWrapper;
+import static rocks.devonthe.rockycore.jei.RockyCoreJEIPlugin.getRecipeRegistry;
+
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
+import rocks.devonthe.rockycore.jei.RockyCoreJEIPlugin;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class AnvilRecipe {
 
@@ -11,14 +15,14 @@ public class AnvilRecipe {
 	private ItemStack right;
 	private ItemStack output;
 	private int cost;
-	private AnvilRecipeWrapper wrapper;
+	private IRecipeWrapper wrapper;
 
 	public AnvilRecipe(ItemStack left, ItemStack right, ItemStack output, int cost) {
 		this.left = left;
 		this.right = right;
 		this.output = output;
 		this.cost = cost;
-		this.wrapper = new AnvilRecipeWrapper(getLeft(), Collections.singletonList(getRight()), Collections.singletonList(getOutput()));
+		this.wrapper = getRecipeRegistry().createAnvilRecipe(left, Collections.singletonList(right), Collections.singletonList(output));
 	}
 
 	public ItemStack getLeft() {
@@ -41,7 +45,7 @@ public class AnvilRecipe {
 		return cost;
 	}
 
-	public AnvilRecipeWrapper getWrapper() {
+	public IRecipeWrapper getWrapper() {
 		return wrapper;
 	}
 }

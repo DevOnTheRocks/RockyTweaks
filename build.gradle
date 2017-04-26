@@ -38,8 +38,8 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile "mezz.jei:jei_${mc_version}:${jei_version}"//:api"
-    //runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+    compileOnly "mezz.jei:jei_${mc_version}:${jei_version}:api"
+    runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 }
 
 processResources {
