@@ -12,18 +12,20 @@ import rocks.devonthe.rockycore.proxy.CommonProxy;
 	name = ModInfo.NAME,
 	modid = ModInfo.MODID,
 	version = ModInfo.VERSION,
-	acceptedMinecraftVersions = "[1.11.2,)",
-	dependencies = "require:forge,after:crafttweaker@[3.0.24,);after:jei@[4.3.3.268,);"
+	acceptedMinecraftVersions = "[1.11]",
+	dependencies = "required-after:forge@[13.20,);"
+		+ "after:crafttweaker@[3.0.24,);"
+		+ "after:jei@[4.3.3.268,);"
 )
 public class RockyCore {
 
-	public static Logger logger = LogManager.getLogger(ModInfo.MODID);
+	@Mod.Instance(ModInfo.MODID)
+	public RockyCore instance;
 
 	@SidedProxy(clientSide = "rocks.devonthe.rockycore.proxy.ClientProxy", serverSide = "rocks.devonthe.rockycore.proxy.CommonProxy")
 	public static CommonProxy proxy;
 
-	@Mod.Instance(ModInfo.MODID)
-	public RockyCore instance;
+	public static Logger logger = LogManager.getLogger(ModInfo.MODID);
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
