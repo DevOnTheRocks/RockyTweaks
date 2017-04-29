@@ -12,10 +12,8 @@ import rocks.devonthe.rockycore.proxy.CommonProxy;
 	name = ModInfo.NAME,
 	modid = ModInfo.MODID,
 	version = ModInfo.VERSION,
-	acceptedMinecraftVersions = "[1.11]",
-	dependencies = "required-after:forge@[13.20,);"
-		+ "after:crafttweaker@[3.0.24,);"
-		+ "after:jei@[4.3.3.268,);"
+	acceptedMinecraftVersions = ModInfo.MC_VERSION,
+	dependencies = ModInfo.DEPENDENCIES
 )
 public class RockyCore {
 

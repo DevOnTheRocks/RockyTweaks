@@ -3,6 +3,7 @@ package rocks.devonthe.rockycore.crafttweaker.anvil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Comparator;
@@ -23,6 +24,22 @@ public class AnvilListener {
 				event.setCost(recipe.getCost());
 				event.setMaterialCost(recipe.getRight().getCount());
 				event.setOutput(recipe.getOutput());
+			});
+	}
+
+	@SubscribeEvent
+	public void onAnvilCraft(AnvilRepairEvent event) {
+		AnvilRecipeHandler.getRecipes().stream()
+			.filter(recipe -> matches(event.getItemInput(), recipe.getLeft()) && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight()))
+			.sorted(Comparator.comparing(AnvilRecipe::getRightCount).reversed())
+			.findFirst()
+			.ifPresent(recipe -> {
+				if (event.getItemInput().getCount() > recipe.getLeft().getCount()) {
+					ItemStack itemStack = event.getItemInput().copy();
+					itemStack.shrink(recipe.getLeft().getCount());
+					boolean drop = !event.getEntityPlayer().inventory.addItemStackToInventory(itemStack);
+					if (drop) event.getEntityPlayer().dropItem(itemStack, true, false);
+				}
 			});
 	}
 
