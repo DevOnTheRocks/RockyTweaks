@@ -51,7 +51,7 @@ public class AnvilRecipeHandler {
 					if (recipe != null) {
 						if (AnvilRecipeHandler.recipes.add(recipe)) {
 							this.successful.add(recipe);
-							RockyCoreJEIPlugin.getRecipeRegistry().addRecipe(recipe.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
+							RockyCoreJEIPlugin.addRecipe(recipe.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
 						} else {
 							LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(recipe)));
 						}
@@ -67,7 +67,7 @@ public class AnvilRecipeHandler {
 				for (AnvilRecipe recipe : this.successful) {
 					if (recipe != null) {
 						if (AnvilRecipeHandler.recipes.remove(recipe)) {
-							RockyCoreJEIPlugin.getRecipeRegistry().removeRecipe(recipe.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
+							RockyCoreJEIPlugin.removeRecipe(recipe.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
 						} else {
 							LogHelper.logError(String.format("Error removing %s Recipe for %s", this.name, this.getRecipeInfo(recipe)));
 						}
@@ -106,7 +106,7 @@ public class AnvilRecipeHandler {
 					if (group != null) {
 						if (AnvilRecipeHandler.recipes.addAll(group.getRecipes())) {
 							this.successful.add(group);
-							RockyCoreJEIPlugin.getRecipeRegistry().addRecipe(group.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
+							RockyCoreJEIPlugin.addRecipe(group.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
 						} else {
 							LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(group)));
 						}
@@ -123,7 +123,7 @@ public class AnvilRecipeHandler {
 					if (group != null) {
 						if (AnvilRecipeHandler.recipes.removeAll(group.getRecipes())) {
 							RockyCore.logger.info("Removed recipe group: " + group.getLeft());
-							RockyCoreJEIPlugin.getRecipeRegistry().removeRecipe(group.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
+							RockyCoreJEIPlugin.removeRecipe(group.getWrapper(), VanillaRecipeCategoryUid.ANVIL);
 						} else {
 							LogHelper.logError(String.format("Error removing %s Recipes for %s", this.name, this.getRecipeInfo(group)));
 						}

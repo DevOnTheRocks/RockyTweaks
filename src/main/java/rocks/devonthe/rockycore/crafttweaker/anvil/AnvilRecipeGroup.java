@@ -25,7 +25,7 @@ public class AnvilRecipeGroup {
 		for (int i = 0; i < right.size(); i++) {
 			this.recipes.add(new AnvilRecipe(left, right.get(i), output.get(i), cost[i]));
 		}
-		this.wrapper = getRecipeRegistry().createAnvilRecipe(left, right, output);
+		this.wrapper = (getRecipeRegistry() != null) ? getRecipeRegistry().createAnvilRecipe(left, right, output) : null;
 	}
 
 	public ItemStack getLeft() {

@@ -4,10 +4,8 @@ import static rocks.devonthe.rockycore.jei.RockyCoreJEIPlugin.getRecipeRegistry;
 
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
-import rocks.devonthe.rockycore.jei.RockyCoreJEIPlugin;
 
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class AnvilRecipe {
 
@@ -22,7 +20,8 @@ public class AnvilRecipe {
 		this.right = right;
 		this.output = output;
 		this.cost = cost;
-		this.wrapper = getRecipeRegistry().createAnvilRecipe(left, Collections.singletonList(right), Collections.singletonList(output));
+		this.wrapper = (getRecipeRegistry() != null) ? getRecipeRegistry().createAnvilRecipe(left, Collections.singletonList(right), Collections
+			.singletonList(output)) : null;
 	}
 
 	public ItemStack getLeft() {
