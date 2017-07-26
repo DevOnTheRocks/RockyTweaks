@@ -1,31 +1,47 @@
 package rocks.devonthe.rockycore.jei;
 
-import mezz.jei.api.BlankModPlugin;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IRecipeRegistry;
+import com.google.common.collect.Lists;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IVanillaRecipeFactory;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import rocks.devonthe.rockycore.RockyCore;
+import rocks.devonthe.rockycore.crafttweaker.anvil.AnvilRecipe;
+import rocks.devonthe.rockycore.crafttweaker.anvil.AnvilRecipeHandler;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
 @JEIPlugin
-public class RockyCoreJEIPlugin extends BlankModPlugin {
+public class RockyCoreJEIPlugin implements IModPlugin {
 
-	private static IRecipeRegistry recipeRegistry;
+	private IModRegistry registry;
 
-	@Override public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-		recipeRegistry = jeiRuntime.getRecipeRegistry();
+	@Override
+	public void register(@Nonnull IModRegistry modRegistry) {
+		registry = modRegistry;
+		registry.addRecipes(getRecipeWrappers(AnvilRecipeHandler.getRecipes()), VanillaRecipeCategoryUid.ANVIL);
+		RockyCore.logger.info(String.format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
 	}
 
-	public static IRecipeRegistry getRecipeRegistry() {
-		return recipeRegistry;
+	private IVanillaRecipeFactory getRecipeFactory() {
+		return registry.getJeiHelpers().getVanillaRecipeFactory();
 	}
 
-	public static void addRecipe(IRecipeWrapper recipe, String recipeCategory) {
-		if (recipeRegistry == null) return;
-		recipeRegistry.addRecipe(recipe, recipeCategory);
-	}
-
-	public static void removeRecipe(IRecipeWrapper recipe, String recipeCategory) {
-		if (recipeRegistry == null) return;
-		recipeRegistry.removeRecipe(recipe, recipeCategory);
+	private List<IRecipeWrapper> getRecipeWrappers(List<AnvilRecipe> recipes) {
+		List<IRecipeWrapper> wrapperList = Lists.newArrayList();
+		for (AnvilRecipe recipe : recipes) {
+			if (recipe.isValid()) {
+				wrapperList.add(getRecipeFactory().createAnvilRecipe(
+					recipe.getLeft(),
+					Collections.singletonList(recipe.getRight()),
+					Collections.singletonList(recipe.getOutput())
+				));
+			}
+		}
+		return wrapperList;
 	}
 }

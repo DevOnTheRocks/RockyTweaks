@@ -17,7 +17,7 @@ public class AnvilListener {
 	@SubscribeEvent
 	public void onAnvilUpdate(AnvilUpdateEvent event) {
 		AnvilRecipeHandler.getRecipes().stream()
-			.filter(recipe -> matches(event.getLeft(), recipe.getLeft()) && greaterThanOrEqual(event.getRight(), recipe.getRight()))
+			.filter(recipe -> recipe.isValid() && matches(event.getLeft(), recipe.getLeft()) && greaterThanOrEqual(event.getRight(), recipe.getRight()))
 			.sorted(Comparator.comparing(AnvilRecipe::getRightCount).reversed())
 			.findFirst()
 			.ifPresent(recipe -> {
@@ -30,7 +30,7 @@ public class AnvilListener {
 	@SubscribeEvent
 	public void onAnvilCraft(AnvilRepairEvent event) {
 		AnvilRecipeHandler.getRecipes().stream()
-			.filter(recipe -> matches(event.getItemInput(), recipe.getLeft()) && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight()))
+			.filter(recipe -> recipe.isValid() && matches(event.getItemInput(), recipe.getLeft()) && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight()))
 			.sorted(Comparator.comparing(AnvilRecipe::getRightCount).reversed())
 			.findFirst()
 			.ifPresent(recipe -> {

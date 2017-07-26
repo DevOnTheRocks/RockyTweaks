@@ -4,7 +4,7 @@ buildscript {
         maven {url = "http://files.minecraftforge.net/maven"}
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -21,7 +21,7 @@ compileJava {
 minecraft {
     version = "${mc_version}-${forge_version}"
     runDir = "run"
-    mappings = "snapshot_20161220"
+    mappings = "${mcp_mappings}"
     makeObfSourceJar = false
 
     replaceIn 'ModInfo.java'
@@ -39,7 +39,8 @@ repositories {
 dependencies {
     compileOnly "mezz.jei:jei_${mc_version}:${jei_version}:api"
     runtime "mezz.jei:jei_${mc_version}:${jei_version}"
-    compile "MineTweaker3:MineTweaker3-MC1112-Main:${mc_version}-${ct_version}"
+    compile "CraftTweaker2:CraftTweaker2-API:${ct_version}"
+    runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:${mc_version}-${ct_version}"
     compile "com.blamejared:MTLib:${mtlib_version}"
 }
 

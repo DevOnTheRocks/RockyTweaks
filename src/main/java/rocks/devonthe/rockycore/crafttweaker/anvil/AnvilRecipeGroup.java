@@ -1,19 +1,16 @@
 package rocks.devonthe.rockycore.crafttweaker.anvil;
 
-import static rocks.devonthe.rockycore.jei.RockyCoreJEIPlugin.getRecipeRegistry;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
+
 
 public class AnvilRecipeGroup {
 
 	private ItemStack left;
 	private List<AnvilRecipe> recipes = Lists.newArrayList();
-	private IRecipeWrapper wrapper;
 
 	public AnvilRecipeGroup(ItemStack left, List<ItemStack> right, List<ItemStack> output, int[] cost) {
 		Preconditions.checkNotNull(left);
@@ -25,7 +22,6 @@ public class AnvilRecipeGroup {
 		for (int i = 0; i < right.size(); i++) {
 			this.recipes.add(new AnvilRecipe(left, right.get(i), output.get(i), cost[i]));
 		}
-		this.wrapper = (getRecipeRegistry() != null) ? getRecipeRegistry().createAnvilRecipe(left, right, output) : null;
 	}
 
 	public ItemStack getLeft() {
@@ -34,9 +30,5 @@ public class AnvilRecipeGroup {
 
 	public List<AnvilRecipe> getRecipes() {
 		return recipes;
-	}
-
-	public IRecipeWrapper getWrapper() {
-		return wrapper;
 	}
 }
