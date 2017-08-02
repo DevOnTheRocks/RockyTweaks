@@ -32,7 +32,6 @@ public class AnvilRecipeHandler {
 		Preconditions.checkNotNull(left);
 		Preconditions.checkNotNull(right);
 		Preconditions.checkNotNull(output);
-		Preconditions.checkNotNull(cost);
 		CraftTweakerAPI.apply(new Add(new AnvilRecipe(toStack(left), toStack(right), toStack(output), cost)));
 	}
 
@@ -72,7 +71,6 @@ public class AnvilRecipeHandler {
 		Preconditions.checkNotNull(left);
 		Preconditions.checkNotNull(right);
 		Preconditions.checkNotNull(output);
-		Preconditions.checkNotNull(cost);
 		Preconditions.checkArgument(right.length == output.length);
 		CraftTweakerAPI.apply(new AddGroup(new AnvilRecipeGroup(toStack(left), toStacks(right), toStacks(output), cost)));
 	}
