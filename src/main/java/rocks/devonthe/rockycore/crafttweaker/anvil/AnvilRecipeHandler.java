@@ -34,7 +34,6 @@ public class AnvilRecipeHandler {
 		Preconditions.checkNotNull(left);
 		Preconditions.checkNotNull(right);
 		Preconditions.checkNotNull(output);
-		Preconditions.checkNotNull(cost);
 		MineTweakerAPI.apply(new Add(new AnvilRecipe(toStack(left), toStack(right), toStack(output), cost)));
 	}
 
@@ -88,7 +87,6 @@ public class AnvilRecipeHandler {
 		Preconditions.checkNotNull(left);
 		Preconditions.checkNotNull(right);
 		Preconditions.checkNotNull(output);
-		Preconditions.checkNotNull(cost);
 		Preconditions.checkArgument(right.length == output.length);
 		MineTweakerAPI.apply(new AddGroup(new AnvilRecipeGroup(toStack(left), toStacks(right), toStacks(output), cost)));
 	}

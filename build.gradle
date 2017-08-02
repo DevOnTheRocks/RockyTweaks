@@ -16,6 +16,7 @@ archivesBaseName = "rockycore"
 sourceCompatibility = targetCompatibility = "1.8"
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
+    options.encoding = 'UTF-8'
 }
 
 minecraft {
