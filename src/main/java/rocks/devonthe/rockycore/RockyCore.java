@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rocks.devonthe.rockycore.proxy.CommonProxy;
@@ -26,8 +27,14 @@ public class RockyCore {
   public static Logger logger = LogManager.getLogger(ModInfo.MODID);
 
   @EventHandler
+  public void preInit(FMLPreInitializationEvent event) {
+    logger.info("Starting PreInitialization.");
+    proxy.preInit(event);
+  }
+
+  @EventHandler
   public void init(FMLInitializationEvent event) {
-    logger.info("Starting Initialization for " + ModInfo.NAME);
+    logger.info("Starting Initialization.");
     proxy.init(event);
   }
 }
