@@ -15,13 +15,11 @@ import org.apache.commons.lang3.text.StrBuilder;
 
 public class MerchantCommand extends CraftTweakerCommand {
 
-  private final List<String> arguments = Lists
-      .newArrayList("professions", "careers"); // TODO: Add "trades"
+  private final List<String> arguments = Lists.newArrayList("professions", "careers"); // TODO: Add "trades"
 
   public MerchantCommand() {
     super("merchant");
-    setDescription(
-        new TextComponentString("Provides a list of valid merchant professions or careers"));
+    setDescription(new TextComponentString("Provides a list of valid merchant professions or careers"));
   }
 
   @Override
@@ -29,24 +27,20 @@ public class MerchantCommand extends CraftTweakerCommand {
   }
 
   @Override
-  public List<String> getSubSubCommand(MinecraftServer server, ICommandSender sender, String[] args,
-      @Nullable BlockPos targetPos) {
+  public List<String> getSubSubCommand(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
     return arguments;
   }
 
   @Override
   public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) {
     if (args.length == 0 || !arguments.contains(args[0])) {
-      sender.sendMessage(new TextComponentString(
-          "Invalid arguments for command. Valid arguments: " + StringHelper.join(arguments, ", ")));
+      sender.sendMessage(new TextComponentString("Invalid arguments for command. Valid arguments: " + StringHelper.join(arguments, ", ")));
     } else {
       if (args[0].equalsIgnoreCase("professions")) {
         StrBuilder builder = new StrBuilder("List of Merchant Professions:").appendNewLine();
-        VillagerHelper.getVillagerProfessions()
-            .forEach(p -> builder.append(p.getRegistryName()).appendNewLine());
+        VillagerHelper.getVillagerProfessions().forEach(p -> builder.append(p.getRegistryName()).appendNewLine());
         CraftTweakerAPI.logCommand(builder.build());
-        sender.sendMessage(
-            new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
+        sender.sendMessage(new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
       } else if (args[0].equalsIgnoreCase("careers")) {
         StrBuilder builder = new StrBuilder("List of Merchant Careers:").appendNewLine();
         VillagerRegistry.VillagerProfession profession = null;
@@ -60,17 +54,14 @@ public class MerchantCommand extends CraftTweakerCommand {
         if (profession == null) {
           VillagerHelper.getVillagerProfessions().forEach(p -> {
             builder.append(p.getRegistryName()).appendNewLine();
-            VillagerHelper.getVillagerCareers(p)
-                .forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+            VillagerHelper.getVillagerCareers(p).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
           });
         } else {
           builder.append(profession.getRegistryName()).appendNewLine();
-          VillagerHelper.getVillagerCareers(profession)
-              .forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+          VillagerHelper.getVillagerCareers(profession).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
         }
         CraftTweakerAPI.logCommand(builder.build());
-        sender.sendMessage(
-            new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
+        sender.sendMessage(new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
       } else if (args[0].equalsIgnoreCase("trades")) {
         StrBuilder builder = new StrBuilder("List of Merchant Trades:").appendNewLine();
         VillagerRegistry.VillagerProfession profession = null;

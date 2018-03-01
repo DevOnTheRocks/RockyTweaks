@@ -12,14 +12,12 @@ public class MerchantTrade {
   private MerchantRecipe recipe;
   private int level;
 
-  public MerchantTrade(VillagerRegistry.VillagerProfession profession,
-      VillagerRegistry.VillagerCareer career, ItemStack buy1, ItemStack buy2,
+  public MerchantTrade(VillagerRegistry.VillagerProfession profession, VillagerRegistry.VillagerCareer career, ItemStack buy1, ItemStack buy2,
       ItemStack sell, int level) {
     this(profession, career, new MerchantRecipe(buy1, buy2, sell), level);
   }
 
-  public MerchantTrade(VillagerRegistry.VillagerProfession profession,
-      VillagerRegistry.VillagerCareer career, MerchantRecipe recipe, int level) {
+  public MerchantTrade(VillagerRegistry.VillagerProfession profession, VillagerRegistry.VillagerCareer career, MerchantRecipe recipe, int level) {
     this.profession = profession;
     this.career = career;
     this.recipe = recipe;
@@ -44,8 +42,6 @@ public class MerchantTrade {
 
   public void register() {
     profession.getCareer(VillagerHelper.getVillagerCareers(profession).indexOf(career))
-        .addTrade(getLevel(),
-            (EntityVillager.ITradeList) (merchant, recipeList, random) -> recipeList
-                .add(getRecipe()));
+        .addTrade(getLevel(), (EntityVillager.ITradeList) (merchant, recipeList, random) -> recipeList.add(getRecipe()));
   }
 }

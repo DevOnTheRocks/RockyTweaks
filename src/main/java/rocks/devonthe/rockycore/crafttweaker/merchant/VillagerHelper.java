@@ -15,8 +15,7 @@ public class VillagerHelper {
     return ForgeRegistries.VILLAGER_PROFESSIONS.getValues();
   }
 
-  public static List<VillagerRegistry.VillagerCareer> getVillagerCareers(
-      VillagerRegistry.VillagerProfession profession) {
+  public static List<VillagerRegistry.VillagerCareer> getVillagerCareers(VillagerRegistry.VillagerProfession profession) {
     List<VillagerRegistry.VillagerCareer> careers = Lists.newArrayList(profession.getCareer(0));
     int i = 0;
     do {
@@ -38,14 +37,11 @@ public class VillagerHelper {
     return Optional.empty();
   }
 
-  public static Optional<VillagerRegistry.VillagerCareer> getCareer(
-      VillagerRegistry.VillagerProfession profession, String career) {
-    return getVillagerCareers(profession).stream().filter(c -> c.getName().equalsIgnoreCase(career))
-        .findAny();
+  public static Optional<VillagerRegistry.VillagerCareer> getCareer(VillagerRegistry.VillagerProfession profession, String career) {
+    return getVillagerCareers(profession).stream().filter(c -> c.getName().equalsIgnoreCase(career)).findAny();
   }
 
-  public static Multimap<Integer, MerchantRecipe> getMerchantRecipes(
-      VillagerRegistry.VillagerCareer career) {
+  public static Multimap<Integer, MerchantRecipe> getMerchantRecipes(VillagerRegistry.VillagerCareer career) {
     Multimap<Integer, MerchantRecipe> recipeMultimap = ArrayListMultimap.create();
     for (int i = 1; career.getTrades(i) != null; i++) {
       career.getTrades(i); // TODO: Turn ITradeList into MerchantRecipes

@@ -17,10 +17,7 @@ public class AnvilListener {
   public void onAnvilUpdate(AnvilUpdateEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
         .filter(recipe -> recipe.isValid() && matches(event.getLeft(), recipe.getLeft())
-            && greaterThanOrEqual(event.getRight(),
-            recipe.getRight()))
-        .sorted(Comparator.comparing(AnvilRecipe::getRightCount).reversed())
-        .findFirst()
+            && greaterThanOrEqual(event.getRight(), recipe.getRight())).max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
           event.setCost(recipe.getCost());
           event.setMaterialCost(recipe.getRight().getCount());
@@ -32,10 +29,7 @@ public class AnvilListener {
   public void onAnvilCraft(AnvilRepairEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
         .filter(recipe -> recipe.isValid() && matches(event.getItemInput(), recipe.getLeft())
-            && greaterThanOrEqual(
-            event.getIngredientInput(), recipe.getRight()))
-        .sorted(Comparator.comparing(AnvilRecipe::getRightCount).reversed())
-        .findFirst()
+            && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight())).max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
           if (event.getItemInput().getCount() > recipe.getLeft().getCount()) {
             ItemStack itemStack = event.getItemInput().copy();

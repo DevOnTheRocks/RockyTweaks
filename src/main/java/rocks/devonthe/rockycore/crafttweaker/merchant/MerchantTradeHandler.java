@@ -27,8 +27,7 @@ public class MerchantTradeHandler {
   }
 
   @ZenMethod
-  public static void addTrade(String profession, String career, IItemStack buy1, IItemStack buy2,
-      IItemStack sell, int level) {
+  public static void addTrade(String profession, String career, IItemStack buy1, IItemStack buy2, IItemStack sell, int level) {
     Preconditions.checkNotNull(profession);
     Preconditions.checkArgument(VillagerHelper.getProfession(profession).isPresent());
     VillagerRegistry.VillagerProfession p1 = VillagerHelper.getProfession(profession).get();
@@ -38,13 +37,12 @@ public class MerchantTradeHandler {
     Preconditions.checkNotNull(sell);
     Preconditions.checkArgument(level > 0);
     CraftTweakerAPI.apply(new MerchantTradeHandler.Add(
-        new MerchantTrade(p1, VillagerHelper.getCareer(p1, career).get(), toStack(buy1),
-            toStack(buy2), toStack(sell), level)));
+        new MerchantTrade(p1, VillagerHelper.getCareer(p1, career).get(), toStack(buy1), toStack(buy2), toStack(sell), level)
+    ));
   }
 
   @ZenMethod
-  public static void addTrade(String profession, String career, IItemStack buy1, IItemStack sell,
-      int level) {
+  public static void addTrade(String profession, String career, IItemStack buy1, IItemStack sell, int level) {
     addTrade(profession, career, buy1, null, sell, level);
   }
 
@@ -64,8 +62,7 @@ public class MerchantTradeHandler {
               this.successful.add(trade);
               trade.register();
             } else {
-              LogHelper.logError(String
-                  .format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(trade)));
+              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(trade)));
             }
           } else {
             LogHelper.logError(String.format("Error adding %s Recipe: null object", this.name));

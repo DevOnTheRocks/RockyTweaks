@@ -11,8 +11,7 @@ public class AnvilRecipeGroup {
   private ItemStack left;
   private List<AnvilRecipe> recipes = Lists.newArrayList();
 
-  public AnvilRecipeGroup(ItemStack left, List<ItemStack> right, List<ItemStack> output,
-      int[] cost) {
+  public AnvilRecipeGroup(ItemStack left, List<ItemStack> right, List<ItemStack> output, int[] cost) {
     Preconditions.checkNotNull(left);
     Preconditions.checkNotNull(right);
     Preconditions.checkNotNull(output);

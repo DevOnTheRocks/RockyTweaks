@@ -22,10 +22,8 @@ public class RockyCoreJEIPlugin implements IModPlugin {
   @Override
   public void register(@Nonnull IModRegistry modRegistry) {
     registry = modRegistry;
-    registry.addRecipes(getRecipeWrappers(AnvilRecipeHandler.getRecipes()),
-        VanillaRecipeCategoryUid.ANVIL);
-    RockyCore.logger.info(String
-        .format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
+    registry.addRecipes(getRecipeWrappers(AnvilRecipeHandler.getRecipes()), VanillaRecipeCategoryUid.ANVIL);
+    RockyCore.logger.info(String.format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
   }
 
   private IVanillaRecipeFactory getRecipeFactory() {
@@ -36,11 +34,12 @@ public class RockyCoreJEIPlugin implements IModPlugin {
     List<IRecipeWrapper> wrapperList = Lists.newArrayList();
     for (AnvilRecipe recipe : recipes) {
       if (recipe.isValid()) {
-        wrapperList.add(getRecipeFactory().createAnvilRecipe(
-            recipe.getLeft(),
-            Collections.singletonList(recipe.getRight()),
-            Collections.singletonList(recipe.getOutput())
-        ));
+        wrapperList.add(
+            getRecipeFactory().createAnvilRecipe(
+                recipe.getLeft(),
+                Collections.singletonList(recipe.getRight()),
+                Collections.singletonList(recipe.getOutput())
+            ));
       }
     }
     return wrapperList;

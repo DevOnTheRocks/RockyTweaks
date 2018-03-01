@@ -31,8 +31,7 @@ public class AnvilRecipeHandler {
     Preconditions.checkNotNull(left);
     Preconditions.checkNotNull(right);
     Preconditions.checkNotNull(output);
-    CraftTweakerAPI
-        .apply(new Add(new AnvilRecipe(toStack(left), toStack(right), toStack(output), cost)));
+    CraftTweakerAPI.apply(new Add(new AnvilRecipe(toStack(left), toStack(right), toStack(output), cost)));
   }
 
   private static class Add extends BaseListAddition<AnvilRecipe> {
@@ -51,8 +50,7 @@ public class AnvilRecipeHandler {
               this.successful.add(recipe);
               recipe.setValid(true);
             } else {
-              LogHelper.logError(String
-                  .format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(recipe)));
+              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(recipe)));
             }
           } else {
             LogHelper.logError(String.format("Error adding %s Recipe: null object", this.name));
@@ -68,14 +66,12 @@ public class AnvilRecipeHandler {
   }
 
   @ZenMethod
-  public static void addRecipes(IItemStack left, IItemStack[] right, IItemStack[] output,
-      int[] cost) {
+  public static void addRecipes(IItemStack left, IItemStack[] right, IItemStack[] output, int[] cost) {
     Preconditions.checkNotNull(left);
     Preconditions.checkNotNull(right);
     Preconditions.checkNotNull(output);
     Preconditions.checkArgument(right.length == output.length);
-    CraftTweakerAPI.apply(
-        new AddGroup(new AnvilRecipeGroup(toStack(left), toStacks(right), toStacks(output), cost)));
+    CraftTweakerAPI.apply(new AddGroup(new AnvilRecipeGroup(toStack(left), toStacks(right), toStacks(output), cost)));
   }
 
   private static class AddGroup extends BaseListAddition<AnvilRecipeGroup> {
@@ -93,8 +89,7 @@ public class AnvilRecipeHandler {
             if (AnvilRecipeHandler.recipes.addAll(group.getRecipes())) {
               this.successful.add(group);
             } else {
-              LogHelper.logError(String
-                  .format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(group)));
+              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(group)));
             }
           } else {
             LogHelper.logError(String.format("Error adding %s Recipe: null object", this.name));
