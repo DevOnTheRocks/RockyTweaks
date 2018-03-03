@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.proxy;
+package rocks.gameonthe.rockycore.proxy;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

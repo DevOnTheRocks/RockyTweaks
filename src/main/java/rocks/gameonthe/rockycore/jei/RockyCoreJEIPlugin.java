@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.jei;
+package rocks.gameonthe.rockycore.jei;
 
 import com.google.common.collect.Lists;
 import java.util.Collections;
@@ -10,9 +10,9 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IVanillaRecipeFactory;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import rocks.devonthe.rockycore.RockyCore;
-import rocks.devonthe.rockycore.crafttweaker.anvil.AnvilRecipe;
-import rocks.devonthe.rockycore.crafttweaker.anvil.AnvilRecipeHandler;
+import rocks.gameonthe.rockycore.RockyCore;
+import rocks.gameonthe.rockycore.crafttweaker.anvil.AnvilRecipe;
+import rocks.gameonthe.rockycore.crafttweaker.anvil.AnvilRecipeHandler;
 
 @JEIPlugin
 public class RockyCoreJEIPlugin implements IModPlugin {

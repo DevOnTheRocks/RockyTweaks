@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore;
+package rocks.gameonthe.rockycore;
 
 public final class ModInfo {
 

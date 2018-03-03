@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockycore.crafttweaker.merchant;
 
 import static com.blamejared.mtlib.helpers.InputHelper.toStack;
 

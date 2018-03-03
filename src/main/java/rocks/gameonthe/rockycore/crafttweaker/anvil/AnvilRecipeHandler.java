@@ -1,13 +1,15 @@
-package rocks.devonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockycore.crafttweaker.anvil;
 
 import static com.blamejared.mtlib.helpers.InputHelper.toStack;
 
 import com.blamejared.mtlib.helpers.LogHelper;
 import com.blamejared.mtlib.utils.BaseListAddition;
+import com.blamejared.mtlib.utils.BaseListRemoval;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import java.util.List;
 import net.minecraft.item.ItemStack;
@@ -19,8 +21,9 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class AnvilRecipeHandler {
 
   protected static final String name = "Anvil";
-  private static List<AnvilRecipe> recipes = Lists.newArrayList();
-  private static List<AnvilRecipeGroup> groups = Lists.newArrayList();
+  private static final List<AnvilRecipe> recipes = Lists.newArrayList();
+  private static final List<AnvilRecipeGroup> groups = Lists.newArrayList();
+  private static final List<AnvilRestriction> blacklist = Lists.newArrayList();
 
   static {
     new AnvilListener();
@@ -104,8 +107,47 @@ public class AnvilRecipeHandler {
     }
   }
 
-  public static List<AnvilRecipe> getRecipes() {
-    return recipes;
+  @ZenMethod
+  public static void remove(IIngredient[] input) {
+    Preconditions.checkNotNull(input);
+    Preconditions.checkArgument(input.length >= 1 && input.length <= 2);
+    CraftTweakerAPI.apply(new Remove(new AnvilRestriction(input)));
+  }
+
+  @ZenMethod
+  public static void remove(IIngredient output) {
+    Preconditions.checkNotNull(output);
+    CraftTweakerAPI.apply(new Remove(new AnvilRestriction(output)));
+  }
+
+  private static class Remove extends BaseListRemoval<AnvilRestriction> {
+
+    public Remove(AnvilRestriction restriction) {
+      super(AnvilRecipeHandler.name, AnvilRecipeHandler.blacklist);
+      this.recipes.add(restriction);
+    }
+
+    @Override
+    public void apply() {
+      if (!this.recipes.isEmpty()) {
+        for (AnvilRestriction restriction : this.recipes) {
+          if (restriction != null) {
+            if (AnvilRecipeHandler.blacklist.add(restriction)) {
+              this.successful.add(restriction);
+            } else {
+              LogHelper.logError(String.format("Error blacklisting anvil input %s", this.getRecipeInfo(restriction)));
+            }
+          } else {
+            LogHelper.logError("Error adding anvil input: null object");
+          }
+        }
+      }
+    }
+
+    @Override
+    public String getRecipeInfo(AnvilRestriction restriction) {
+      return LogHelper.getStackDescription(restriction);
+    }
   }
 
   private static List<ItemStack> toStacks(IItemStack[] iStacks) {
@@ -117,5 +159,13 @@ public class AnvilRecipeHandler {
       stacks.add(toStack(stack));
     }
     return stacks;
+  }
+
+  public static List<AnvilRecipe> getRecipes() {
+    return recipes;
+  }
+
+  public static List<AnvilRestriction> getBlacklist() {
+    return blacklist;
   }
 }

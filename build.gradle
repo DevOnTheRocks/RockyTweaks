@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mc_version}-${mod_version}"
-group = "rocks.devonthe.rockycore"
+group = "rocks.gameonthe.rockycore"
 archivesBaseName = "rockycore"
 
 sourceCompatibility = targetCompatibility = "1.8"

@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockycore.crafttweaker.merchant;
 
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;

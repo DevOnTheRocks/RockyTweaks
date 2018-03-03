@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockycore.crafttweaker.anvil;
 
 import net.minecraft.item.ItemStack;
 

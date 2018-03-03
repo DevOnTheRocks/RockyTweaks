@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore;
+package rocks.gameonthe.rockycore;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rocks.devonthe.rockycore.proxy.CommonProxy;
+import rocks.gameonthe.rockycore.proxy.CommonProxy;
 
 @Mod(
     name = ModInfo.NAME,
@@ -21,7 +21,7 @@ public class RockyCore {
   @Mod.Instance(ModInfo.MODID)
   public RockyCore instance;
 
-  @SidedProxy(clientSide = "rocks.devonthe.rockycore.proxy.ClientProxy", serverSide = "rocks.devonthe.rockycore.proxy.CommonProxy")
+  @SidedProxy(clientSide = "rocks.gameonthe.rockycore.proxy.ClientProxy", serverSide = "rocks.gameonthe.rockycore.proxy.CommonProxy")
   public static CommonProxy proxy;
 
   public static Logger logger = LogManager.getLogger(ModInfo.MODID);

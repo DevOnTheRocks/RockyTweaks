@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockycore.crafttweaker.merchant;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;

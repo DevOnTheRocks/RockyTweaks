@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockycore.crafttweaker.merchant;
 
 import com.blamejared.mtlib.helpers.StringHelper;
 import com.google.common.collect.Lists;

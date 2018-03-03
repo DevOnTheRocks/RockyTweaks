@@ -1,4 +1,4 @@
-package rocks.devonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockycore.crafttweaker.anvil;
 
 import java.util.Comparator;
 import net.minecraft.item.ItemStack;
@@ -15,14 +15,26 @@ public class AnvilListener {
 
   @SubscribeEvent
   public void onAnvilUpdate(AnvilUpdateEvent event) {
+    handleAnvilRemovals(event);
+    handleAnvilAdditions(event);
+  }
+
+  private void handleAnvilAdditions(AnvilUpdateEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
         .filter(recipe -> recipe.isValid() && matches(event.getLeft(), recipe.getLeft())
             && greaterThanOrEqual(event.getRight(), recipe.getRight())).max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
+          event.setCanceled(false);
           event.setCost(recipe.getCost());
           event.setMaterialCost(recipe.getRight().getCount());
           event.setOutput(recipe.getOutput());
         });
+  }
+
+  private void handleAnvilRemovals(AnvilUpdateEvent event) {
+    if (AnvilRecipeHandler.getBlacklist().stream().anyMatch(r -> r.isBlacklisted(event.getLeft(), event.getRight(), event.getOutput()))) {
+      event.setCanceled(true);
+    }
   }
 
   @SubscribeEvent
