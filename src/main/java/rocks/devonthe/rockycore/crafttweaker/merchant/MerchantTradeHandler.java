@@ -31,7 +31,7 @@ public class MerchantTradeHandler {
     Preconditions.checkArgument(VillagerHelper.getCareer(p1, career).isPresent());
     Preconditions.checkNotNull(buy1);
     Preconditions.checkNotNull(sell);
-    Preconditions.checkArgument(level >= 0);
+    Preconditions.checkArgument(level > 0);
     CraftTweakerAPI.apply(new MerchantTradeHandler.Add(
         new MerchantTrade(p1, VillagerHelper.getCareer(p1, career).get(), toStack(buy1),
             toStack(buy2), toStack(sell), level)));
