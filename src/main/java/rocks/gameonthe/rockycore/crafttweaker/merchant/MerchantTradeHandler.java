@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IItemStack;
-import crafttweaker.mc1120.commands.CTChatCommand;
 import java.util.List;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -21,10 +20,6 @@ public class MerchantTradeHandler {
 
   protected static final String name = "Merchant";
   private static List<MerchantTrade> trades = Lists.newArrayList();
-
-  static {
-    CTChatCommand.registerCommand(new MerchantCommand());
-  }
 
   @ZenMethod
   public static void addTrade(String profession, String career, IItemStack buy1, IItemStack buy2, IItemStack sell, int level) {
