@@ -1,9 +1,9 @@
-package rocks.gameonthe.rockycore.proxy;
+package rocks.gameonthe.rockytweaks.proxy;
 
 import crafttweaker.mc1120.commands.CTChatCommand;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import rocks.gameonthe.rockycore.crafttweaker.merchant.MerchantCommand;
+import rocks.gameonthe.rockytweaks.crafttweaker.merchant.MerchantCommand;
 
 public class CommonProxy {
 

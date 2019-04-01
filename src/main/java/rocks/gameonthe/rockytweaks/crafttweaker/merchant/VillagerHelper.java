@@ -1,18 +1,23 @@
-package rocks.gameonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockytweaks.crafttweaker.merchant;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 
-public class VillagerHelper {
+public final class VillagerHelper {
 
-  public static List<VillagerRegistry.VillagerProfession> getVillagerProfessions() {
-    return ForgeRegistries.VILLAGER_PROFESSIONS.getValues();
+  private VillagerHelper(){
+  }
+
+  public static Collection<VillagerProfession> getVillagerProfessions() {
+    return ForgeRegistries.VILLAGER_PROFESSIONS.getValuesCollection();
   }
 
   public static List<VillagerRegistry.VillagerCareer> getVillagerCareers(VillagerRegistry.VillagerProfession profession) {
@@ -29,8 +34,8 @@ public class VillagerHelper {
   public static Optional<VillagerRegistry.VillagerProfession> getProfession(String profession) {
     for (VillagerRegistry.VillagerProfession p : getVillagerProfessions()) {
       if (p.getRegistryName() != null
-          && p.getRegistryName().toString().equalsIgnoreCase(profession)
-          || p.getRegistryName().toString().equalsIgnoreCase("minecraft:" + profession)) {
+          && (p.getRegistryName().toString().equalsIgnoreCase(profession)
+          || p.getRegistryName().toString().equalsIgnoreCase("minecraft:" + profession))) {
         return Optional.of(p);
       }
     }

@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import static crafttweaker.api.minecraft.CraftTweakerMC.getIItemStack;
 

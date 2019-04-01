@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.crafttweaker.merchant;
+package rocks.gameonthe.rockytweaks.crafttweaker.merchant;
 
 import static com.blamejared.mtlib.helpers.InputHelper.toStack;
 
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.rockycore.Merchant")
+@ZenClass("mods.rockytweaks.Merchant")
 @ZenRegister
 public class MerchantTradeHandler {
 

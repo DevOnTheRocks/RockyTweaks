@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import java.util.Comparator;
 import net.minecraft.item.ItemStack;

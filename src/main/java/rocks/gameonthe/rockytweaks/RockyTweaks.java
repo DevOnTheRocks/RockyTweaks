@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore;
+package rocks.gameonthe.rockytweaks;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rocks.gameonthe.rockycore.proxy.CommonProxy;
+import rocks.gameonthe.rockytweaks.proxy.CommonProxy;
 
 @Mod(
     name = ModInfo.NAME,
@@ -16,12 +16,12 @@ import rocks.gameonthe.rockycore.proxy.CommonProxy;
     acceptedMinecraftVersions = ModInfo.MC_VERSION,
     dependencies = ModInfo.DEPENDENCIES
 )
-public class RockyCore {
+public class RockyTweaks {
 
   @Mod.Instance(ModInfo.MODID)
-  public RockyCore instance;
+  public RockyTweaks instance;
 
-  @SidedProxy(clientSide = "rocks.gameonthe.rockycore.proxy.ClientProxy", serverSide = "rocks.gameonthe.rockycore.proxy.CommonProxy")
+  @SidedProxy(clientSide = "rocks.gameonthe.rockytweaks.proxy.ClientProxy", serverSide = "rocks.gameonthe.rockytweaks.proxy.CommonProxy")
   public static CommonProxy proxy;
 
   public static Logger logger = LogManager.getLogger(ModInfo.MODID);

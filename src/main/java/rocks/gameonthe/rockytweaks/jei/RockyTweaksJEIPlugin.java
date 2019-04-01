@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.jei;
+package rocks.gameonthe.rockytweaks.jei;
 
 import com.google.common.collect.Lists;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IVanillaRecipeFactory;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import rocks.gameonthe.rockycore.RockyCore;
-import rocks.gameonthe.rockycore.crafttweaker.anvil.AnvilRecipe;
-import rocks.gameonthe.rockycore.crafttweaker.anvil.AnvilRecipeHandler;
+import rocks.gameonthe.rockytweaks.RockyTweaks;
+import rocks.gameonthe.rockytweaks.crafttweaker.anvil.AnvilRecipe;
+import rocks.gameonthe.rockytweaks.crafttweaker.anvil.AnvilRecipeHandler;
 
 @JEIPlugin
-public class RockyCoreJEIPlugin implements IModPlugin {
+public class RockyTweaksJEIPlugin implements IModPlugin {
 
   private IModRegistry registry;
 
@@ -23,7 +23,7 @@ public class RockyCoreJEIPlugin implements IModPlugin {
   public void register(@Nonnull IModRegistry modRegistry) {
     registry = modRegistry;
     registry.addRecipes(getRecipeWrappers(AnvilRecipeHandler.getRecipes()), VanillaRecipeCategoryUid.ANVIL);
-    RockyCore.logger.info(String.format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
+    RockyTweaks.logger.info(String.format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
   }
 
   private IVanillaRecipeFactory getRecipeFactory() {

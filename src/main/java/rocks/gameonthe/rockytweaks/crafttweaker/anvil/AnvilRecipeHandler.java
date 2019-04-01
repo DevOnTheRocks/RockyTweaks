@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import static com.blamejared.mtlib.helpers.InputHelper.toStack;
 
@@ -7,16 +7,19 @@ import com.blamejared.mtlib.utils.BaseListAddition;
 import com.blamejared.mtlib.utils.BaseListRemoval;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Streams;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.rockycore.Anvil")
+@ZenClass("mods.rockytweaks.Anvil")
 @ZenRegister
 public class AnvilRecipeHandler {
 
@@ -34,6 +37,7 @@ public class AnvilRecipeHandler {
     Preconditions.checkNotNull(left);
     Preconditions.checkNotNull(right);
     Preconditions.checkNotNull(output);
+    Preconditions.checkArgument(cost > 0);
     CraftTweakerAPI.apply(new Add(new AnvilRecipe(toStack(left), toStack(right), toStack(output), cost)));
   }
 
@@ -74,6 +78,7 @@ public class AnvilRecipeHandler {
     Preconditions.checkNotNull(right);
     Preconditions.checkNotNull(output);
     Preconditions.checkArgument(right.length == output.length);
+    Preconditions.checkArgument(Arrays.stream(cost).allMatch(i -> i > 0));
     CraftTweakerAPI.apply(new AddGroup(new AnvilRecipeGroup(toStack(left), toStacks(right), toStacks(output), cost)));
   }
 
