@@ -1,6 +1,8 @@
 package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import java.util.Comparator;
+
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -55,7 +57,9 @@ public class AnvilListener {
   }
 
   private boolean matches(ItemStack stack1, ItemStack stack2) {
-    return stack1.getItem().equals(stack2.getItem())
+    Item item1 = stack1.getItem();
+    return item1.equals(stack2.getItem())
+        && (item1.isDamageable() || stack1.getMetadata() == stack2.getMetadata())
         && stack1.hasTagCompound() == stack2.hasTagCompound()
         && (!(stack1.hasTagCompound()) || stack1.getTagCompound().equals(stack2.getTagCompound()));
   }
