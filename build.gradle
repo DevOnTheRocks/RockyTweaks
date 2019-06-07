@@ -10,8 +10,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mc_version}-${mod_version}"
-group = "rocks.gameonthe.rockycore"
-archivesBaseName = "rockycore"
+group = "rocks.gameonthe.rockytweaks"
+archivesBaseName = "rockytweaks"
 
 sourceCompatibility = targetCompatibility = "1.8"
 compileJava {
@@ -33,7 +33,7 @@ minecraft {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {url 'http://maven.blamejared.com'}
+    maven {url "http://maven.blamejared.com"}
     maven {url "http://dvs1.progwml6.com/files/maven"}
 }
 

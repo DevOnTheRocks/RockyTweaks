@@ -1,6 +1,8 @@
-package rocks.gameonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import java.util.Comparator;
+
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -21,8 +23,10 @@ public class AnvilListener {
 
   private void handleAnvilAdditions(AnvilUpdateEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
-        .filter(recipe -> recipe.isValid() && matches(event.getLeft(), recipe.getLeft())
-            && greaterThanOrEqual(event.getRight(), recipe.getRight())).max(Comparator.comparing(AnvilRecipe::getRightCount))
+        .filter(recipe -> recipe.isValid()
+            && matches(event.getLeft(), recipe.getLeft())
+            && greaterThanOrEqual(event.getRight(), recipe.getRight()))
+        .max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
           event.setCanceled(false);
           event.setCost(recipe.getCost());
@@ -40,14 +44,15 @@ public class AnvilListener {
   @SubscribeEvent
   public void onAnvilCraft(AnvilRepairEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
-        .filter(recipe -> recipe.isValid() && matches(event.getItemInput(), recipe.getLeft())
-            && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight())).max(Comparator.comparing(AnvilRecipe::getRightCount))
+        .filter(recipe -> recipe.isValid()
+            && matches(event.getItemInput(), recipe.getLeft())
+            && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight()))
+        .max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
           if (event.getItemInput().getCount() > recipe.getLeft().getCount()) {
             ItemStack itemStack = event.getItemInput().copy();
             itemStack.shrink(recipe.getLeft().getCount());
-            boolean drop = !event.getEntityPlayer().inventory.addItemStackToInventory(itemStack);
-            if (drop) {
+            if (!event.getEntityPlayer().inventory.addItemStackToInventory(itemStack)) {
               event.getEntityPlayer().dropItem(itemStack, true, false);
             }
           }
@@ -55,13 +60,14 @@ public class AnvilListener {
   }
 
   private boolean matches(ItemStack stack1, ItemStack stack2) {
-    return stack1.getItem().equals(stack2.getItem())
+    Item item1 = stack1.getItem();
+    return item1.equals(stack2.getItem())
+        && (item1.isDamageable() || stack1.getMetadata() == stack2.getMetadata())
         && stack1.hasTagCompound() == stack2.hasTagCompound()
-        && (!(stack1.hasTagCompound()) || stack1.getTagCompound().equals(stack2.getTagCompound()));
+        && (stack1.getTagCompound() == null || stack1.getTagCompound().equals(stack2.getTagCompound()));
   }
 
   private boolean greaterThanOrEqual(ItemStack stack1, ItemStack stack2) {
-    return matches(stack1, stack2)
-        && stack1.getCount() >= stack2.getCount();
+    return matches(stack1, stack2) && stack1.getCount() >= stack2.getCount();
   }
 }

@@ -1,4 +1,4 @@
-package rocks.gameonthe.rockycore.crafttweaker.anvil;
+package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
