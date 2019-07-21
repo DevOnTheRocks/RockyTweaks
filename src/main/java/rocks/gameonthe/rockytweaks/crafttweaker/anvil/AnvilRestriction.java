@@ -3,6 +3,7 @@ package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 import static crafttweaker.api.minecraft.CraftTweakerMC.getIItemStack;
 
 import crafttweaker.api.item.IIngredient;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 
 public class AnvilRestriction {
@@ -35,6 +36,15 @@ public class AnvilRestriction {
       }
     } else if (this.output != null) {
       return this.output.matches(getIItemStack(output));
+    }
+    return false;
+  }
+
+  public boolean isBlacklisted(ItemStack left, List<ItemStack> right, List<ItemStack> output) {
+    for (int i = 0; i < right.size(); i++) {
+      if (isBlacklisted(left, right.get(i), right.size() == output.size() ? output.get(i) : output.get(0))) {
+        return true;
+      }
     }
     return false;
   }

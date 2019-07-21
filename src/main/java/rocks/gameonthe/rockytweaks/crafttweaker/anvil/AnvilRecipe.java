@@ -1,36 +1,58 @@
 package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
+import com.blamejared.mtlib.helpers.InputHelper;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.recipes.IRecipeFunction;
 import net.minecraft.item.ItemStack;
 
 public class AnvilRecipe {
 
-  private ItemStack left;
-  private ItemStack right;
-  private ItemStack output;
+  private IIngredient left;
+  private IIngredient right;
+  private IItemStack output;
+  private IRecipeFunction function;
   private int cost;
   private boolean valid = false;
 
-  public AnvilRecipe(ItemStack left, ItemStack right, ItemStack output, int cost) {
+  public AnvilRecipe(IIngredient left, IIngredient right, IItemStack output, int cost, IRecipeFunction function) {
     this.left = left;
     this.right = right;
     this.output = output;
     this.cost = cost;
+    this.function = function;
   }
 
-  public ItemStack getLeft() {
-    return left.copy();
+  public IIngredient getLeft() {
+    return left;
   }
 
-  public ItemStack getRight() {
-    return right.copy();
+  public ItemStack getLeftStack() {
+    return InputHelper.toStack(left.getItems().get(0));
+  }
+
+  public IIngredient getRight() {
+    return right;
+  }
+
+  public ItemStack getRightStack() {
+    return InputHelper.toStack(right.getItems().get(0));
   }
 
   public int getRightCount() {
-    return right.getCount();
+    return right.getAmount();
   }
 
-  public ItemStack getOutput() {
-    return output.copy();
+  public IItemStack getOutput() {
+    return output;
+  }
+
+  public ItemStack getOutputStack() {
+    return InputHelper.toStack(output);
+  }
+
+  public IRecipeFunction getFunction() {
+    return function;
   }
 
   public int getCost() {

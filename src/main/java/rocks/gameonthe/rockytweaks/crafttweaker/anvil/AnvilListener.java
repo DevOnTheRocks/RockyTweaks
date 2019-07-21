@@ -1,8 +1,12 @@
 package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
+import com.blamejared.mtlib.helpers.InputHelper;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import java.util.Comparator;
-
-import net.minecraft.item.Item;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -24,14 +28,14 @@ public class AnvilListener {
   private void handleAnvilAdditions(AnvilUpdateEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
         .filter(recipe -> recipe.isValid()
-            && matches(event.getLeft(), recipe.getLeft())
-            && greaterThanOrEqual(event.getRight(), recipe.getRight()))
+            && matches(recipe.getLeft(), event.getLeft())
+            && greaterThanOrEqual(recipe.getRight(), event.getRight()))
         .max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
           event.setCanceled(false);
           event.setCost(recipe.getCost());
-          event.setMaterialCost(recipe.getRight().getCount());
-          event.setOutput(recipe.getOutput());
+          event.setMaterialCost(recipe.getRightStack().getCount());
+          event.setOutput(getAnvilOutput(recipe, event));
         });
   }
 
@@ -45,13 +49,13 @@ public class AnvilListener {
   public void onAnvilCraft(AnvilRepairEvent event) {
     AnvilRecipeHandler.getRecipes().stream()
         .filter(recipe -> recipe.isValid()
-            && matches(event.getItemInput(), recipe.getLeft())
-            && greaterThanOrEqual(event.getIngredientInput(), recipe.getRight()))
+            && matches(recipe.getLeft(), event.getItemInput())
+            && greaterThanOrEqual(recipe.getRight(), event.getIngredientInput()))
         .max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
-          if (event.getItemInput().getCount() > recipe.getLeft().getCount()) {
+          if (event.getItemInput().getCount() > recipe.getLeftStack().getCount()) {
             ItemStack itemStack = event.getItemInput().copy();
-            itemStack.shrink(recipe.getLeft().getCount());
+            itemStack.shrink(recipe.getLeftStack().getCount());
             if (!event.getEntityPlayer().inventory.addItemStackToInventory(itemStack)) {
               event.getEntityPlayer().dropItem(itemStack, true, false);
             }
@@ -59,15 +63,34 @@ public class AnvilListener {
         });
   }
 
-  private boolean matches(ItemStack stack1, ItemStack stack2) {
-    Item item1 = stack1.getItem();
-    return item1.equals(stack2.getItem())
-        && (item1.isDamageable() || stack1.getMetadata() == stack2.getMetadata())
-        && stack1.hasTagCompound() == stack2.hasTagCompound()
-        && (stack1.getTagCompound() == null || stack1.getTagCompound().equals(stack2.getTagCompound()));
+  private boolean matches(IIngredient iItemStack, ItemStack itemStack) {
+    return iItemStack.matches(InputHelper.toIItemStack(itemStack));
+
+//    Item item1 = stack1.getItem();
+//    return item1.equals(stack2.getItem())
+//        && (item1.isDamageable() || stack1.getMetadata() == stack2.getMetadata())
+//        && stack1.hasTagCompound() == stack2.hasTagCompound()
+//        && (stack1.getTagCompound() == null || stack1.getTagCompound().equals(stack2.getTagCompound()));
   }
 
-  private boolean greaterThanOrEqual(ItemStack stack1, ItemStack stack2) {
-    return matches(stack1, stack2) && stack1.getCount() >= stack2.getCount();
+  private boolean greaterThanOrEqual(IIngredient iItemStack, ItemStack itemStack) {
+    return matches(iItemStack, itemStack) && iItemStack.getAmount() >= itemStack.getCount();
+  }
+
+  private ItemStack getAnvilOutput(AnvilRecipe recipe, AnvilUpdateEvent event) {
+    if (recipe.getFunction() != null) {
+      Map<String, IItemStack> inputs = new HashMap<String, IItemStack>() {{
+        put("left", InputHelper.toIItemStack(event.getLeft()));
+        put("right", InputHelper.toIItemStack(event.getRight()));
+      }};
+      IItemStack out = null;
+      try {
+        out = recipe.getFunction().process(recipe.getOutput(), inputs, null);
+      } catch(Exception exception) {
+        CraftTweakerAPI.logError("Could not execute RecipeFunction: ", exception);
+      }
+      return InputHelper.toStack(out);
+    }
+    return InputHelper.toStack(recipe.getOutput());
   }
 }
