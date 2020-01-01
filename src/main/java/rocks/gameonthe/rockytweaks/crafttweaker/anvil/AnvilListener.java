@@ -7,6 +7,7 @@ import crafttweaker.api.item.IItemStack;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -40,7 +41,8 @@ public class AnvilListener {
   }
 
   private void handleAnvilRemovals(AnvilUpdateEvent event) {
-    if (AnvilRecipeHandler.getBlacklist().stream().anyMatch(r -> r.isBlacklisted(event.getLeft(), event.getRight(), event.getOutput()))) {
+    if (AnvilRecipeHandler.getBlacklist().stream()
+        .anyMatch(r -> r.isBlacklisted(event.getLeft(), event.getRight(), event.getOutput()))) {
       event.setCanceled(true);
     }
   }
@@ -53,44 +55,60 @@ public class AnvilListener {
             && greaterThanOrEqual(recipe.getRight(), event.getIngredientInput()))
         .max(Comparator.comparing(AnvilRecipe::getRightCount))
         .ifPresent(recipe -> {
-          if (event.getItemInput().getCount() > recipe.getLeftStack().getCount()) {
+          if (event.getItemInput().getCount() > recipe.getLeft().getAmount()) {
             ItemStack itemStack = event.getItemInput().copy();
-            itemStack.shrink(recipe.getLeftStack().getCount());
-            if (!event.getEntityPlayer().inventory.addItemStackToInventory(itemStack)) {
-              event.getEntityPlayer().dropItem(itemStack, true, false);
-            }
+            itemStack.shrink(recipe.getLeft().getAmount());
+            addToPlayerInventoryOrDrop(event.getEntityPlayer(), itemStack);
           }
+          processInputTransform(event.getEntityPlayer(), event.getItemInput(), recipe.getLeft());
+          processInputTransform(event.getEntityPlayer(), event.getIngredientInput(), recipe.getRight());
         });
+  }
+
+  private void processInputTransform(EntityPlayer player, ItemStack actual, IIngredient recipe) {
+    if (recipe.hasNewTransformers()) {
+      IItemStack transform = recipe.applyNewTransform(InputHelper.toIItemStack(actual));
+      addToPlayerInventoryOrDrop(player, transform);
+    }
   }
 
   private boolean matches(IIngredient iItemStack, ItemStack itemStack) {
     return iItemStack.matches(InputHelper.toIItemStack(itemStack));
-
-//    Item item1 = stack1.getItem();
-//    return item1.equals(stack2.getItem())
-//        && (item1.isDamageable() || stack1.getMetadata() == stack2.getMetadata())
-//        && stack1.hasTagCompound() == stack2.hasTagCompound()
-//        && (stack1.getTagCompound() == null || stack1.getTagCompound().equals(stack2.getTagCompound()));
   }
 
   private boolean greaterThanOrEqual(IIngredient iItemStack, ItemStack itemStack) {
-    return matches(iItemStack, itemStack) && iItemStack.getAmount() >= itemStack.getCount();
+    return matches(iItemStack.amount(itemStack.getCount()), itemStack) && itemStack.getCount() >= iItemStack.getAmount();
   }
 
   private ItemStack getAnvilOutput(AnvilRecipe recipe, AnvilUpdateEvent event) {
     if (recipe.getFunction() != null) {
-      Map<String, IItemStack> inputs = new HashMap<String, IItemStack>() {{
-        put("left", InputHelper.toIItemStack(event.getLeft()));
-        put("right", InputHelper.toIItemStack(event.getRight()));
-      }};
+      Map<String, IItemStack> inputs = new HashMap<>();
+      inputs.put("left", InputHelper.toIItemStack(event.getLeft()));
+      inputs.put("right", InputHelper.toIItemStack(event.getRight()));
       IItemStack out = null;
+
       try {
         out = recipe.getFunction().process(recipe.getOutput(), inputs, null);
-      } catch(Exception exception) {
+      } catch (Exception exception) {
         CraftTweakerAPI.logError("Could not execute RecipeFunction: ", exception);
       }
-      return InputHelper.toStack(out);
+      return InputHelper.toStack(out).copy();
     }
-    return InputHelper.toStack(recipe.getOutput());
+    return InputHelper.toStack(recipe.getOutput()).copy();
+  }
+
+  private void addToPlayerInventoryOrDrop(EntityPlayer player, ItemStack itemStack) {
+    if (itemStack.isEmpty()) {
+      return;
+    }
+
+    itemStack = itemStack.copy();
+    if (!player.inventory.addItemStackToInventory(itemStack)) {
+      player.dropItem(itemStack, true, false);
+    }
+  }
+
+  private void addToPlayerInventoryOrDrop(EntityPlayer player, IItemStack itemStack) {
+    addToPlayerInventoryOrDrop(player, InputHelper.toStack(itemStack));
   }
 }
