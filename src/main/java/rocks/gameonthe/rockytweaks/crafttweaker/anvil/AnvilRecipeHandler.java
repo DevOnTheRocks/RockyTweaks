@@ -19,13 +19,18 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class AnvilRecipeHandler {
 
-  protected static final String name = "Anvil";
+  protected static final String NAME = "Anvil";
+  private static boolean removeAll = false;
   private static final List<AnvilRecipe> recipes = Lists.newArrayList();
-  private static final List<AnvilRecipeGroup> groups = Lists.newArrayList();
   private static final List<AnvilRestriction> blacklist = Lists.newArrayList();
 
   static {
     new AnvilListener();
+  }
+
+  @ZenMethod
+  public static void removeAll() {
+    removeAll = true;
   }
 
   @ZenMethod
@@ -40,7 +45,7 @@ public class AnvilRecipeHandler {
   private static class Add extends BaseListAddition<AnvilRecipe> {
 
     public Add(AnvilRecipe recipe) {
-      super(AnvilRecipeHandler.name, AnvilRecipeHandler.recipes);
+      super(AnvilRecipeHandler.NAME, AnvilRecipeHandler.recipes);
       this.recipes.add(recipe);
     }
 
@@ -68,46 +73,6 @@ public class AnvilRecipeHandler {
     }
   }
 
-//  @ZenMethod
-//  public static void addRecipes(IItemStack left, IItemStack[] right, IItemStack[] output, int[] cost) {
-//    Preconditions.checkNotNull(left);
-//    Preconditions.checkNotNull(right);
-//    Preconditions.checkNotNull(output);
-//    Preconditions.checkArgument(right.length == output.length);
-//    Preconditions.checkArgument(Arrays.stream(cost).allMatch(i -> i > 0));
-//    CraftTweakerAPI.apply(new AddGroup(new AnvilRecipeGroup(left, right, output, cost)));
-//  }
-//
-//  private static class AddGroup extends BaseListAddition<AnvilRecipeGroup> {
-//
-//    public AddGroup(AnvilRecipeGroup group) {
-//      super(AnvilRecipeHandler.name, AnvilRecipeHandler.groups);
-//      this.recipes.add(group);
-//    }
-//
-//    @Override
-//    public void apply() {
-//      if (!this.recipes.isEmpty()) {
-//        for (AnvilRecipeGroup group : this.recipes) {
-//          if (group != null) {
-//            if (AnvilRecipeHandler.recipes.addAll(group.getRecipes())) {
-//              this.successful.add(group);
-//            } else {
-//              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(group)));
-//            }
-//          } else {
-//            LogHelper.logError(String.format("Error adding %s Recipe: null object", this.name));
-//          }
-//        }
-//      }
-//    }
-//
-//    @Override
-//    public String getRecipeInfo(AnvilRecipeGroup group) {
-//      return LogHelper.getStackDescription(group.getLeft());
-//    }
-//  }
-
   @ZenMethod
   public static void remove(IIngredient[] input) {
     Preconditions.checkNotNull(input);
@@ -124,7 +89,7 @@ public class AnvilRecipeHandler {
   private static class Remove extends BaseListRemoval<AnvilRestriction> {
 
     public Remove(AnvilRestriction restriction) {
-      super(AnvilRecipeHandler.name, AnvilRecipeHandler.blacklist);
+      super(AnvilRecipeHandler.NAME, AnvilRecipeHandler.blacklist);
       this.recipes.add(restriction);
     }
 
@@ -149,6 +114,10 @@ public class AnvilRecipeHandler {
     public String getRecipeInfo(AnvilRestriction restriction) {
       return LogHelper.getStackDescription(restriction);
     }
+  }
+
+  public static boolean isRemoveAll() {
+    return removeAll;
   }
 
   public static List<AnvilRecipe> getRecipes() {

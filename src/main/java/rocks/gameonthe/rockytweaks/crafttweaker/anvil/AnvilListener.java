@@ -27,17 +27,20 @@ public class AnvilListener {
   }
 
   private void handleAnvilAdditions(AnvilUpdateEvent event) {
-    AnvilRecipeHandler.getRecipes().stream()
-        .filter(recipe -> recipe.isValid()
-            && matches(recipe.getLeft(), event.getLeft())
-            && greaterThanOrEqual(recipe.getRight(), event.getRight()))
+    AnvilRecipe recipe = AnvilRecipeHandler.getRecipes().stream()
+        .filter(r -> r.isValid()
+            && matches(r.getLeft(), event.getLeft())
+            && greaterThanOrEqual(r.getRight(), event.getRight()))
         .max(Comparator.comparing(AnvilRecipe::getRightCount))
-        .ifPresent(recipe -> {
-          event.setCanceled(false);
-          event.setCost(recipe.getCost());
-          event.setMaterialCost(recipe.getRightStack().getCount());
-          event.setOutput(getAnvilOutput(recipe, event));
-        });
+        .orElse(null);
+    if (recipe != null) {
+      event.setCanceled(false);
+      event.setCost(recipe.getCost());
+      event.setMaterialCost(recipe.getRightStack().getCount());
+      event.setOutput(getAnvilOutput(recipe, event));
+    } else if (AnvilRecipeHandler.isRemoveAll()) {
+      event.setCanceled(true);
+    }
   }
 
   private void handleAnvilRemovals(AnvilUpdateEvent event) {

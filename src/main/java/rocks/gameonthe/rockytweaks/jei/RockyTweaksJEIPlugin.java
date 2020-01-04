@@ -28,12 +28,14 @@ import rocks.gameonthe.rockytweaks.crafttweaker.anvil.AnvilRecipeHandler;
 public class RockyTweaksJEIPlugin implements IModPlugin {
 
   private IModRegistry registry;
+  private List<IRecipeWrapper> recipeWrappers;
 
   @Override
   public void register(@Nonnull IModRegistry modRegistry) {
     registry = modRegistry;
-    registry.addRecipes(getRecipeWrappers(AnvilRecipeHandler.getRecipes()), VanillaRecipeCategoryUid.ANVIL);
-    RockyTweaks.logger.info(String.format("Registered %d anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size()));
+    recipeWrappers = getRecipeWrappers(AnvilRecipeHandler.getRecipes());
+    registry.addRecipes(recipeWrappers, VanillaRecipeCategoryUid.ANVIL);
+    RockyTweaks.logger.info("Registered {} anvil recipes with JEI.", AnvilRecipeHandler.getRecipes().size());
   }
 
   @Override
@@ -41,34 +43,17 @@ public class RockyTweaksJEIPlugin implements IModPlugin {
     final IRecipeRegistry recipeRegistry = jeiRuntime.getRecipeRegistry();
     final IRecipeCategory<IRecipeWrapper> anvilRecipeCategory = recipeRegistry.getRecipeCategory(VanillaRecipeCategoryUid.ANVIL);
 
-    if (anvilRecipeCategory == null || AnvilRecipeHandler.getBlacklist().isEmpty()) {
+    if (anvilRecipeCategory == null) {
       return;
     }
 
-    recipeRegistry.getRecipeWrappers(anvilRecipeCategory).stream()
-        .collect(Collectors.toMap(
-            r -> r,
-            r -> {
-              IIngredients ingredients = new Ingredients();
-              r.getIngredients(ingredients);
-              return ingredients;
-            }
-        ))
-        .forEach((wrapper, ingredients) -> {
-          final List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
-          final ItemStack left = inputs.get(0).get(0);
-          final List<ItemStack> right = inputs.get(1);
-          final List<ItemStack> output = ingredients.getOutputs(ItemStack.class).get(0);
-          if (AnvilRecipeHandler.getBlacklist().stream()
-              .anyMatch(restriction -> restriction.isBlacklisted(left, right, output))) {
-            LogHelper.logInfo(String.format("Hiding blacklisted recipe from JEI:\n\tRight: %s\n\tLeft: %s\n\tOutput: %s",
-                LogHelper.getStackDescription(left),
-                LogHelper.getStackDescription(right),
-                LogHelper.getStackDescription(output)
-            ));
-            recipeRegistry.hideRecipe(wrapper);
-          }
-        });
+    if (AnvilRecipeHandler.isRemoveAll()) {
+      recipeRegistry.getRecipeWrappers(anvilRecipeCategory).stream()
+          .filter(r -> !recipeWrappers.contains(r))
+          .forEach(recipeRegistry::hideRecipe);
+    } else if (!AnvilRecipeHandler.getBlacklist().isEmpty()) {
+      hideBlacklistedRecipes(recipeRegistry, anvilRecipeCategory);
+    }
   }
 
   private IVanillaRecipeFactory getRecipeFactory() {
@@ -91,5 +76,34 @@ public class RockyTweaksJEIPlugin implements IModPlugin {
       }
     }
     return wrapperList;
+  }
+
+  private void hideBlacklistedRecipes(IRecipeRegistry recipeRegistry,
+      IRecipeCategory<IRecipeWrapper> anvilRecipeCategory) {
+    recipeRegistry.getRecipeWrappers(anvilRecipeCategory).stream()
+        .collect(Collectors.toMap(
+            r -> r,
+            r -> {
+              IIngredients ingredients = new Ingredients();
+              r.getIngredients(ingredients);
+              return ingredients;
+            }
+        ))
+        .forEach((wrapper, ingredients) -> {
+          final List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
+          final ItemStack left = inputs.get(0).get(0);
+          final List<ItemStack> right = inputs.get(1);
+          final List<ItemStack> output = ingredients.getOutputs(ItemStack.class).get(0);
+          if (AnvilRecipeHandler.getBlacklist().stream()
+              .anyMatch(restriction -> restriction.isBlacklisted(left, right, output))) {
+            LogHelper
+                .logInfo(String.format("Hiding blacklisted recipe from JEI:%n\tRight: %s%n\tLeft: %s%n\tOutput: %s",
+                    LogHelper.getStackDescription(left),
+                    LogHelper.getStackDescription(right),
+                    LogHelper.getStackDescription(output)
+                ));
+            recipeRegistry.hideRecipe(wrapper);
+          }
+        });
   }
 }
