@@ -19,18 +19,18 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class MerchantTradeHandler {
 
   protected static final String name = "Merchant";
-  private static List<MerchantTrade> trades = Lists.newArrayList();
+  private static final List<MerchantTrade> trades = Lists.newArrayList();
 
   @ZenMethod
   public static void addTrade(String profession, String career, IItemStack buy1, IItemStack buy2, IItemStack sell, int level) {
-    Preconditions.checkNotNull(profession);
-    Preconditions.checkArgument(VillagerHelper.getProfession(profession).isPresent());
+    Preconditions.checkNotNull(profession, "Profession is required");
+    Preconditions.checkArgument(VillagerHelper.getProfession(profession).isPresent(), "Profession not found");
     VillagerRegistry.VillagerProfession p1 = VillagerHelper.getProfession(profession).get();
-    Preconditions.checkNotNull(career);
-    Preconditions.checkArgument(VillagerHelper.getCareer(p1, career).isPresent());
-    Preconditions.checkNotNull(buy1);
-    Preconditions.checkNotNull(sell);
-    Preconditions.checkArgument(level > 0);
+    Preconditions.checkNotNull(career, "Career is required");
+    Preconditions.checkArgument(VillagerHelper.getCareer(p1, career).isPresent(), "Career not found");
+    Preconditions.checkNotNull(buy1, "Input is required");
+    Preconditions.checkNotNull(sell, "Output is required");
+    Preconditions.checkArgument(level > 0, "Level is required");
     CraftTweakerAPI.apply(new MerchantTradeHandler.Add(
         new MerchantTrade(p1, VillagerHelper.getCareer(p1, career).get(), toStack(buy1), toStack(buy2), toStack(sell), level)
     ));

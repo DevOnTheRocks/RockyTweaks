@@ -14,6 +14,7 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.IRecipeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IVanillaRecipeFactory;
@@ -50,7 +51,7 @@ public class RockyTweaksJEIPlugin implements IModPlugin {
     if (AnvilRecipeHandler.isRemoveAll()) {
       recipeRegistry.getRecipeWrappers(anvilRecipeCategory).stream()
           .filter(r -> !recipeWrappers.contains(r))
-          .forEach(recipeRegistry::hideRecipe);
+          .forEach(recipe -> recipeRegistry.hideRecipe(recipe, VanillaRecipeCategoryUid.ANVIL));
     } else if (!AnvilRecipeHandler.getBlacklist().isEmpty()) {
       hideBlacklistedRecipes(recipeRegistry, anvilRecipeCategory);
     }
@@ -90,10 +91,10 @@ public class RockyTweaksJEIPlugin implements IModPlugin {
             }
         ))
         .forEach((wrapper, ingredients) -> {
-          final List<List<ItemStack>> inputs = ingredients.getInputs(ItemStack.class);
+          final List<List<ItemStack>> inputs = ingredients.getInputs(VanillaTypes.ITEM);
           final ItemStack left = inputs.get(0).get(0);
           final List<ItemStack> right = inputs.get(1);
-          final List<ItemStack> output = ingredients.getOutputs(ItemStack.class).get(0);
+          final List<ItemStack> output = ingredients.getOutputs(VanillaTypes.ITEM).get(0);
           if (AnvilRecipeHandler.getBlacklist().stream()
               .anyMatch(restriction -> restriction.isBlacklisted(left, right, output))) {
             LogHelper
@@ -102,7 +103,7 @@ public class RockyTweaksJEIPlugin implements IModPlugin {
                     LogHelper.getStackDescription(right),
                     LogHelper.getStackDescription(output)
                 ));
-            recipeRegistry.hideRecipe(wrapper);
+            recipeRegistry.hideRecipe(wrapper, VanillaRecipeCategoryUid.ANVIL);
           }
         });
   }
