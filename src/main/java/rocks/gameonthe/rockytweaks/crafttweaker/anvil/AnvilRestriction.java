@@ -1,10 +1,11 @@
 package rocks.gameonthe.rockytweaks.crafttweaker.anvil;
 
-import static crafttweaker.api.minecraft.CraftTweakerMC.getIItemStack;
+import static crafttweaker.api.minecraft.CraftTweakerMC.getIngredient;
 
 import crafttweaker.api.item.IIngredient;
 import java.util.List;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 
 public class AnvilRestriction {
 
@@ -24,18 +25,18 @@ public class AnvilRestriction {
   public boolean isBlacklisted(ItemStack left, ItemStack right, ItemStack output) {
     if (this.input != null) {
       if (this.input.length == 1) {
-        IIngredient i = input[0];
+        Ingredient i = getIngredient(input[0]);
 
-        return i.matches(getIItemStack(left)) || i.matches(getIItemStack(right));
+        return i.apply(left) || i.apply(right);
       } else if (this.input.length == 2) {
-        IIngredient i1 = input[0];
-        IIngredient i2 = input[1];
+        Ingredient i1 = getIngredient(input[0]);
+        Ingredient i2 = getIngredient(input[1]);
 
-        return i1.matches(getIItemStack(left)) && i2.matches(getIItemStack(right))
-            || i1.matches(getIItemStack(right)) && i2.matches(getIItemStack(left));
+        return i1.apply(left) && i2.apply(right)
+            || i1.apply(right) && i2.apply(left);
       }
     } else if (this.output != null) {
-      return this.output.matches(getIItemStack(output));
+      return getIngredient(this.output).apply(output);
     }
     return false;
   }
