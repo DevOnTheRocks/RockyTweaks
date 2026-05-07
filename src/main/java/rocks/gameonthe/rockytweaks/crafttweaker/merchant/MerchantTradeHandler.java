@@ -37,6 +37,28 @@ public class MerchantTradeHandler {
   }
 
   @ZenMethod
+  public static void addTradeChance(String profession, String career, IItemStack buy1, IItemStack buy2, IItemStack sell, int level, float chance) {
+    Preconditions.checkNotNull(profession);
+    Preconditions.checkArgument(VillagerHelper.getProfession(profession).isPresent());
+    VillagerRegistry.VillagerProfession p1 = VillagerHelper.getProfession(profession).get();
+    Preconditions.checkNotNull(career);
+    Preconditions.checkArgument(VillagerHelper.getCareer(p1, career).isPresent());
+    Preconditions.checkNotNull(buy1);
+    Preconditions.checkNotNull(sell);
+    Preconditions.checkArgument(level > 0);
+    Preconditions.checkArgument(chance > 0.0f);
+    Preconditions.checkArgument(chance <= 100.0f);
+    CraftTweakerAPI.apply(new MerchantTradeHandler.Add(
+            new MerchantTrade(p1, VillagerHelper.getCareer(p1, career).get(), toStack(buy1), toStack(buy2), toStack(sell), level, chance)
+    ));
+  }
+
+  @ZenMethod
+  public static void addTradeChance(String profession, String career, IItemStack buy1, IItemStack sell, int level, float chance) {
+    addTradeChance(profession, career, buy1, null, sell, level, chance);
+  }
+
+  @ZenMethod
   public static void addTrade(String profession, String career, IItemStack buy1, IItemStack sell, int level) {
     addTrade(profession, career, buy1, null, sell, level);
   }
@@ -57,7 +79,7 @@ public class MerchantTradeHandler {
               this.successful.add(trade);
               trade.register();
             } else {
-              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo(trade)));
+              LogHelper.logError(String.format("Error adding %s Recipe for %s", this.name, this.getRecipeInfo()));
             }
           } else {
             LogHelper.logError(String.format("Error adding %s Recipe: null object", this.name));
@@ -68,7 +90,7 @@ public class MerchantTradeHandler {
 
     @Override
     public String getRecipeInfo(MerchantTrade trade) {
-      return LogHelper.getStackDescription(trade.getRecipe());
+      return LogHelper.getStackDescription(trade.getRecipe(null));
     }
   }
 
