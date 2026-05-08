@@ -54,11 +54,11 @@ public class MerchantCommand extends CraftTweakerCommand {
         if (profession == null) {
           VillagerHelper.getVillagerProfessions().forEach(p -> {
             builder.append(p.getRegistryName()).appendNewLine();
-            VillagerHelper.getVillagerCareers(p).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+            VillagerHelper.getProfessionCareers(p).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
           });
         } else {
           builder.append(profession.getRegistryName()).appendNewLine();
-          VillagerHelper.getVillagerCareers(profession).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+          VillagerHelper.getProfessionCareers(profession).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
         }
         CraftTweakerAPI.logCommand(builder.build());
         sender.sendMessage(new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
@@ -81,7 +81,7 @@ public class MerchantCommand extends CraftTweakerCommand {
           }
           if (profession == null) {
             VillagerHelper.getVillagerProfessions().forEach(p -> {
-              VillagerHelper.getVillagerCareers(p).forEach(c -> {
+              VillagerHelper.getProfessionCareers(p).forEach(c -> {
                 // TODO: Get the Merchant Recipes ¯\_(ツ)_/¯
               });
             });
