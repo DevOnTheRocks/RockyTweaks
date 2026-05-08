@@ -1,5 +1,6 @@
 package rocks.gameonthe.rockytweaks.crafttweaker.merchant;
 
+import com.blamejared.mtlib.helpers.LogHelper;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -69,14 +70,18 @@ public class MerchantTrade {
   }
 
   public void register() {
-    profession.getCareer(VillagerHelper.getVillagerCareers(profession).indexOf(career))
-        .addTrade(getLevel(), (EntityVillager.ITradeList) (merchant, recipeList, random) -> {
-          if(recipe != null) {
-            MerchantRecipe recipeChance = getRecipe(random);
-            if (recipeChance != null) {
-              recipeList.add(recipeChance);
-            }
-          }
-        });
+    try {
+      VillagerHelper.getCareerRef(VillagerHelper.getProfessionName(profession).toString(), career.getName())
+              .addTrade(getLevel(), (EntityVillager.ITradeList) (merchant, recipeList, random) -> {
+                if(recipe != null) {
+                  MerchantRecipe recipeChance = getRecipe(random);
+                  if (recipeChance != null) {
+                    recipeList.add(recipeChance);
+                  }
+                }
+              });
+    } catch (NullPointerException e) {
+      LogHelper.logError(String.format("Got invalid career: %s", e.getMessage()));
+    }
   }
 }
