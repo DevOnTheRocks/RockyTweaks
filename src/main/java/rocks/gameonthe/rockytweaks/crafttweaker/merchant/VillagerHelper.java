@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -16,6 +17,10 @@ public final class VillagerHelper {
 
   private VillagerHelper(){
   }
+
+  public static Class TREASURE_MAP_TRADE = Arrays.stream(EntityVillager.class.getDeclaredClasses()).filter(clazz ->
+          "net.minecraft.entity.passive.EntityVillager.TreasureMapForEmeralds".equals(clazz.getCanonicalName())
+  ).findFirst().get();
 
   public static Collection<VillagerProfession> getVillagerProfessions() {
     return ForgeRegistries.VILLAGER_PROFESSIONS.getValuesCollection();
@@ -51,6 +56,16 @@ public final class VillagerHelper {
       Field namefield = profession.getClass().getDeclaredField("careers");
       namefield.setAccessible(true);
       return (List<VillagerRegistry.VillagerCareer>) namefield.get(profession);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
+  }
+
+  public static List<List<EntityVillager.ITradeList>> getCareerTrades(VillagerRegistry.VillagerCareer career) {
+    try {
+      Field namefield = career.getClass().getDeclaredField("trades");
+      namefield.setAccessible(true);
+      return (List<List<EntityVillager.ITradeList>>) namefield.get(career);
     } catch (Exception e) {
       return new ArrayList<>();
     }

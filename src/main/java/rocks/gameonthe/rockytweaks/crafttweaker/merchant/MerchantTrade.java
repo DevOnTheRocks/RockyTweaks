@@ -14,7 +14,7 @@ public class MerchantTrade {
 
   private VillagerRegistry.VillagerProfession profession;
   private VillagerRegistry.VillagerCareer career;
-  private MerchantRecipe recipe;
+  public final MerchantRecipe recipe;
   private int level;
   private float chance;
 
@@ -44,27 +44,6 @@ public class MerchantTrade {
     this.chance = chance;
   }
 
-  public VillagerRegistry.VillagerProfession getProfession() {
-    return profession;
-  }
-
-  public VillagerRegistry.VillagerCareer getCareer() {
-    return career;
-  }
-
-  public MerchantRecipe getRecipe(Random random) {
-    if (random == null) {
-      return recipe;
-    } else {
-      float randomValue = MathHelper.nextFloat(random, 0.0f, 100.0f);
-      if (randomValue < this.chance) {
-        return recipe;
-      } else {
-        return null;
-      }
-    }
-  }
-
   public int getLevel() {
     return level;
   }
@@ -72,16 +51,13 @@ public class MerchantTrade {
   public void register() {
     try {
       VillagerHelper.getCareerRef(VillagerHelper.getProfessionName(profession).toString(), career.getName())
-              .addTrade(getLevel(), (EntityVillager.ITradeList) (merchant, recipeList, random) -> {
-                if(recipe != null) {
-                  MerchantRecipe recipeChance = getRecipe(random);
-                  if (recipeChance != null) {
-                    recipeList.add(recipeChance);
-                  }
-                }
-              });
+              .addTrade(getLevel(), toTradeItem());
     } catch (NullPointerException e) {
       LogHelper.logError(String.format("Got invalid career: %s", e.getMessage()));
     }
+  }
+
+  private EntityVillager.ITradeList toTradeItem() {
+    return (EntityVillager.ITradeList) new MerchantTradeItem(this.recipe, this.chance);
   }
 }
