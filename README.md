@@ -1,10 +1,10 @@
-# Rocky Tweaks - A Forge Mod
+# Rocky Tweaks – A Forge Mod
 
 #### _Previously Rocky Core_
 [![Rocky Tweaks](http://cf.way2muchnoise.eu/versions/265461.svg)](https://www.curseforge.com/minecraft/mc-mods/rocky-tweaks)
 [![Rocky Tweaks](http://cf.way2muchnoise.eu/full_265461_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/rocky-tweaks)
 
-This mod is designed to add useful features for modpacks.
+This mod is designed to add useful features for modpacks.
 
 ### Current Features:
 - [CraftTweaker](https://minecraft.curseforge.com/projects/crafttweaker)
