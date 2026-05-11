@@ -24,7 +24,7 @@ public class RockyTweaks {
   @SidedProxy(clientSide = "rocks.gameonthe.rockytweaks.proxy.ClientProxy", serverSide = "rocks.gameonthe.rockytweaks.proxy.CommonProxy")
   public static CommonProxy proxy;
 
-  public static Logger logger = LogManager.getLogger(ModInfo.MODID);
+  public static final Logger logger = LogManager.getLogger(ModInfo.MODID);
 
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
