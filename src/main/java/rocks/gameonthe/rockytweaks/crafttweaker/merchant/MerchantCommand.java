@@ -4,18 +4,24 @@ import com.blamejared.mtlib.helpers.StringHelper;
 import com.google.common.collect.Lists;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CraftTweakerCommand;
+
+import java.lang.reflect.Field;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.storage.MapDecoration;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import org.apache.commons.lang3.text.StrBuilder;
 
+import static rocks.gameonthe.rockytweaks.crafttweaker.merchant.VillagerHelper.TREASURE_MAP_TRADE;
+
 public class MerchantCommand extends CraftTweakerCommand {
 
-  private final List<String> arguments = Lists.newArrayList("professions", "careers"); // TODO: Add "trades"
+  private final List<String> arguments = Lists.newArrayList("professions", "careers", "trades");
 
   public MerchantCommand() {
     super("merchant");
@@ -54,11 +60,11 @@ public class MerchantCommand extends CraftTweakerCommand {
         if (profession == null) {
           VillagerHelper.getVillagerProfessions().forEach(p -> {
             builder.append(p.getRegistryName()).appendNewLine();
-            VillagerHelper.getVillagerCareers(p).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+            VillagerHelper.getProfessionCareers(p).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
           });
         } else {
           builder.append(profession.getRegistryName()).appendNewLine();
-          VillagerHelper.getVillagerCareers(profession).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
+          VillagerHelper.getProfessionCareers(profession).forEach(c -> builder.append(" - ").append(c.getName()).appendNewLine());
         }
         CraftTweakerAPI.logCommand(builder.build());
         sender.sendMessage(new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
@@ -79,18 +85,115 @@ public class MerchantCommand extends CraftTweakerCommand {
               sender.sendMessage(new TextComponentString("Invalid career."));
             }
           }
-          if (profession == null) {
-            VillagerHelper.getVillagerProfessions().forEach(p -> {
-              VillagerHelper.getVillagerCareers(p).forEach(c -> {
-                // TODO: Get the Merchant Recipes ¯\_(ツ)_/¯
+        }
+        if (profession == null) {
+          VillagerHelper.getVillagerProfessions().forEach(p -> {
+            builder.append(p.getRegistryName()).appendNewLine();
+            VillagerHelper.getProfessionCareers(p).forEach(c -> {
+              builder.append(" - ").append(c.getName()).appendNewLine();
+
+              int idx = 1;
+              for (List<EntityVillager.ITradeList> levelTrades : VillagerHelper.getCareerTrades(c)) {
+                if (!levelTrades.isEmpty()) builder.append("    - Level ").append(idx++).appendNewLine();
+
+                levelTrades.forEach(tradeItem -> {
+                  builder.append("       * ").append(buildTradeString(tradeItem)).appendNewLine();
+                });
+              }
+            });
+          });
+        } else if (career == null) {
+          builder.append(profession.getRegistryName()).appendNewLine();
+          VillagerHelper.getProfessionCareers(profession).forEach(c -> {
+            builder.append(" - ").append(c.getName()).appendNewLine();
+
+            int idx = 1;
+            for (List<EntityVillager.ITradeList> levelTrades : VillagerHelper.getCareerTrades(c)) {
+              if (!levelTrades.isEmpty()) builder.append("    - Level ").append(idx++).appendNewLine();
+
+              levelTrades.forEach(tradeItem -> {
+                builder.append("       * ").append(buildTradeString(tradeItem)).appendNewLine();
               });
+            }
+          });
+        } else {
+          builder.append(profession.getRegistryName()).appendNewLine();
+          builder.append(" - ").append(career.getName()).appendNewLine();
+
+          int idx = 1;
+          for (List<EntityVillager.ITradeList> levelTrades : VillagerHelper.getCareerTrades(career)) {
+            if (!levelTrades.isEmpty()) builder.append("    - Level ").append(idx++).appendNewLine();
+
+            levelTrades.forEach(tradeItem -> {
+              builder.append("       * ").append(buildTradeString(tradeItem)).appendNewLine();
             });
           }
         }
         CraftTweakerAPI.logCommand(builder.build());
+        sender.sendMessage(new TextComponentString("List generated; see crafttweaker.log in your minecraft dir."));
       } else {
         sender.sendMessage(new TextComponentString("I can't even... (╯°□°）╯︵ ┻━┻"));
       }
     }
+  }
+
+  private String buildTradeString(EntityVillager.ITradeList tradeItem) {
+    if(tradeItem instanceof EntityVillager.EmeraldForItems) {
+      EntityVillager.EmeraldForItems specialized = (EntityVillager.EmeraldForItems) tradeItem;
+      return "[EmeraldForItems] buy: " + specialized.buyingItem.getRegistryName().toString() +
+              ", emeralds: " + specialized.price.getFirst() + "/" + specialized.price.getSecond();
+    }
+
+    if(tradeItem instanceof MerchantTradeItem) {
+      MerchantTradeItem specialized = (MerchantTradeItem) tradeItem;
+      return "[MerchantTradeItem] chance: " + specialized.chance +
+              ", buy1: " + specialized.recipe.getItemToBuy().serializeNBT().toString() +
+              ", buy2: " + (specialized.recipe.hasSecondItemToBuy()?specialized.recipe.getSecondItemToBuy().serializeNBT().toString():"null") +
+              ", sell: " + specialized.recipe.getItemToSell().serializeNBT().toString();
+    }
+
+    if(tradeItem instanceof EntityVillager.ItemAndEmeraldToItem) {
+      EntityVillager.ItemAndEmeraldToItem specialized = (EntityVillager.ItemAndEmeraldToItem) tradeItem;
+      return "[ItemAndEmeraldToItem] buy: " + specialized.buyingItemStack.serializeNBT().toString() +
+              ", buyEmeralds: " + specialized.buyingPriceInfo.getFirst() + "/" + specialized.buyingPriceInfo.getSecond() +
+              ", sell: " + specialized.sellingItemstack.serializeNBT().toString() +
+              ", sellEmeralds: " + specialized.sellingPriceInfo.getFirst() + "/" + specialized.sellingPriceInfo.getSecond();
+    }
+
+    if(tradeItem instanceof EntityVillager.ListEnchantedBookForEmeralds) {
+      return "[ListEnchantedBookForEmeralds] fixedBuy: book + emeralds" +
+              ", fixedSell: enchanted_book + enchantment?";
+    }
+
+    if(tradeItem instanceof EntityVillager.ListEnchantedItemForEmeralds) {
+      EntityVillager.ListEnchantedItemForEmeralds specialized = (EntityVillager.ListEnchantedItemForEmeralds) tradeItem;
+      return "[ListEnchantedItemForEmeralds] emeralds: " + specialized.priceInfo.getFirst() + "/" + specialized.priceInfo.getSecond() +
+              ", sell: " + specialized.enchantedItemStack.serializeNBT().toString() + " + enchantment?";
+    }
+
+    if(tradeItem instanceof EntityVillager.ListItemForEmeralds) {
+      EntityVillager.ListItemForEmeralds specialized = (EntityVillager.ListItemForEmeralds) tradeItem;
+      return "[ListItemForEmeralds] buy: " + specialized.itemToBuy.serializeNBT().toString() +
+              ", emeralds: " + specialized.priceInfo.getFirst() + "/" + specialized.priceInfo.getSecond();
+    }
+
+    if(TREASURE_MAP_TRADE.isInstance(tradeItem)) {
+      try {
+        Field value = tradeItem.getClass().getDeclaredField("value");
+        value.setAccessible(true);
+        EntityVillager.PriceInfo price = (EntityVillager.PriceInfo) value.get(tradeItem);
+
+        Field destinationType = tradeItem.getClass().getDeclaredField("destinationType");
+        destinationType.setAccessible(true);
+        MapDecoration.Type mapType = (MapDecoration.Type) destinationType.get(tradeItem);
+        return "[TreasureMapForEmeralds] emeralds: " + price.getFirst() + "/" + price.getSecond() +
+                ", fixedSell: minecraft:compass" +
+                ", buyMapFilled: " + mapType.name();
+      } catch (Exception e) {
+        return "[TreasureMapForEmeralds] Malformed???";
+      }
+    }
+
+    return "[Unknown Type] " + tradeItem.getClass().getCanonicalName();
   }
 }
