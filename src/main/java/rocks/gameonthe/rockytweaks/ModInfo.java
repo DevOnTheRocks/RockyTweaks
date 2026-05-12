@@ -2,6 +2,9 @@ package rocks.gameonthe.rockytweaks;
 
 public final class ModInfo {
 
+  private ModInfo() {
+  }
+
   public static final String MODID = "rockytweaks";
   public static final String NAME = "@NAME@";
   public static final String VERSION = "@VERSION@";
