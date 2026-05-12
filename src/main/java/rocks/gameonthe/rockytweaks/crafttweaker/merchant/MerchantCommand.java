@@ -195,5 +195,6 @@ public class MerchantCommand extends CraftTweakerCommand {
     }
 
     return "[Unknown Type] ???";
+    return "[Unknown Type] " + tradeItem.getClass().getCanonicalName();
   }
 }
